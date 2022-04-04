@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tailer_app/components/main_button.dart';
 import 'package:tailer_app/controllers/appdata.dart';
 import 'package:tailer_app/screens/book_appointment_screen.dart';
-import 'package:provider/provider.dart';
+
+import '../models/type.dart';
 
 class TypeScreen extends StatefulWidget {
   @override
@@ -10,6 +12,20 @@ class TypeScreen extends StatefulWidget {
 }
 
 class _TypeScreenState extends State<TypeScreen> {
+  List<DressType> dataList;
+
+  @override
+  initState() {
+    super.initState();
+
+    dataList = context.read<AppData>().selectedGender.title == "Male"
+        ? context.read<AppData>().maleTypes
+        : context.read<AppData>().femaleTypes;
+    setState(() {
+
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,33 +36,14 @@ class _TypeScreenState extends State<TypeScreen> {
         builder: (context, data, ch) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (true)
-              // Container(
-              //   padding: const EdgeInsets.all(15.0),
-              //   margin: const EdgeInsets.only(top: 8.0),
-              //   decoration: BoxDecoration(
-              //       color: Colors.redAccent,
-              //       borderRadius: BorderRadius.only(
-              //         bottomRight: Radius.circular(15),
-              //         topRight: Radius.circular(15),
-              //       )),
-              //   child: Text(
-              //     'Mens',
-              //     style: TextStyle(
-              //       color: Colors.white,
-              //       fontSize: 20.0,
-              //     ),
-              //   ),
-              // ),
-            if (true)
+            if (data.selectedGender.title == "Male")
               Expanded(
                 child: ListView.builder(
                   itemCount: data.maleTypes.length,
                   itemBuilder: (context, index) {
                     return CheckboxListTile(
-                      title: Text(data.maleTypes[index].title),
-                      // title: Text(data.maleTypes[index].title +
-                      //     "  (${data.maleTypes[index].price}₹)"),
+                      title: Text(data.maleTypes[index].title +
+                          "  (${data.needFabric ? data.maleTypes[index].needFabricPrice : data.maleTypes[index].haveFabricPrice}₹)"),
                       value: data.maleTypes[index].selected,
                       activeColor: Theme.of(context).primaryColor,
                       onChanged: (val) {
@@ -56,53 +53,35 @@ class _TypeScreenState extends State<TypeScreen> {
                   },
                 ),
               ),
-            // if (context.read<AppData>().selectedGender.title == 'Female')
-            //   Container(
-            //     padding: const EdgeInsets.all(15.0),
-            //     margin: const EdgeInsets.only(top: 8.0),
-            //     decoration: BoxDecoration(
-            //         color: Colors.pinkAccent,
-            //         borderRadius: BorderRadius.only(
-            //           bottomRight: Radius.circular(15),
-            //           topRight: Radius.circular(15),
-            //         )),
-            //     child: Text(
-            //       'Ladies',
-            //       style: TextStyle(
-            //         color: Colors.white,
-            //         fontSize: 20.0,
-            //       ),
-            //     ),
-            //   ),
-            // if (context.read<AppData>().selectedGender.title == 'Female')
-            //   Expanded(
-            //     child: ListView.builder(
-            //       itemCount: data.femaleTypes.length,
-            //       itemBuilder: (context, index) {
-            //         return CheckboxListTile(
-            //           title: Text(data.femaleTypes[index].title +
-            //               "  (${data.femaleTypes[index].price}₹)"),
-            //           value: data.femaleTypes[index].selected,
-            //           activeColor: Theme.of(context).primaryColor,
-            //           onChanged: (val) {
-            //             data.setFemaleSelected(index, val);
-            //           },
-            //         );
-            //       },
-            //     ),
-            //   ),
+            if (data.selectedGender.title == 'Female')
+              Expanded(
+                child: ListView.builder(
+                  itemCount: data.femaleTypes.length,
+                  itemBuilder: (context, index) {
+                    return CheckboxListTile(
+                      title: Text(data.femaleTypes[index].title +
+                          "  (${data.needFabric ? data.femaleTypes[index].needFabricPrice : data.femaleTypes[index].haveFabricPrice}₹)"),
+                      value: data.femaleTypes[index].selected,
+                      activeColor: Theme.of(context).primaryColor,
+                      onChanged: (val) {
+                        data.setFemaleSelected(index, val);
+                      },
+                    );
+                  },
+                ),
+              ),
             MainButton(
-              submit: data.maleTypes.any((element) => element.selected == true)
-                      ? () {
-                          context.read<AppData>().setDressTypes(data.maleTypes);
-                          return Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BookAppointmentScreen(),
-                            ),
-                          );
-                        }
-                      : () {},
+              submit: dataList.any((element) => element.selected == true)
+                  ? () {
+                      context.read<AppData>().setDressTypes(data.maleTypes);
+                      return Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BookAppointmentScreen(),
+                        ),
+                      );
+                    }
+                  : () {},
             )
           ],
         ),

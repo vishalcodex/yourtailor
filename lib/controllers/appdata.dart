@@ -1,4 +1,3 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:tailer_app/helper/network_helper.dart';
 import 'package:tailer_app/models/gender.dart';
@@ -9,6 +8,7 @@ import 'package:tailer_app/models/user.dart';
 class AppData extends ChangeNotifier {
   User _userData;
   bool _loading = false;
+  bool _needFabric = false;
   Gender _selectedGender;
   List<Occasion> _occasions = [];
   List<DressType> _types = [];
@@ -27,6 +27,8 @@ class AppData extends ChangeNotifier {
   String get date => _date;
 
   bool get loading => _loading;
+
+  bool get needFabric => _needFabric;
 
   String get fromTime => _fromTime;
 
@@ -48,6 +50,11 @@ class AppData extends ChangeNotifier {
 
   void setLoading(bool val) {
     _loading = val;
+    notifyListeners();
+  }
+
+  void setNeedFabric(bool val) {
+    _needFabric = val;
     notifyListeners();
   }
 
@@ -100,9 +107,13 @@ class AppData extends ChangeNotifier {
       occasion += element.title + ',';
     });
     var type = '';
-    types.forEach((element) {
-      type += element.title + ',';
+    List<DressType> dressTypes = _selectedGender.title == "Male" ? _maleTypes : _femaleTypes;
+    dressTypes.forEach((element) {
+      if (element.selected) {
+        type += element.title + '(${_needFabric ? element.needFabricPrice : element.haveFabricPrice}₹),';
+      }
     });
+    print(type);
     var data = {
       'phone': _userData.mobile,
       'name': _userData.name,
@@ -112,6 +123,7 @@ class AppData extends ChangeNotifier {
       'toTime': toTime,
       'date': date,
       'gender': _selectedGender.title,
+      'fabric': _needFabric ? 'I need fabric' : 'I have fabric',
       'occasions': occasion,
       'types': type,
     };
@@ -132,31 +144,6 @@ class AppData extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Future<dynamic> getData() {
-  //   return NetworkHelper().get('home.php').then((res) {
-  //     if (res['status'] == true) {
-  //       final resImages = res['images'];
-  //       final resTypes = res['data'];
-  //       _images = List<String>.from(resImages);
-  //       if (resTypes != null) {
-  //         _types = List<DressType>.from(
-  //           resTypes.map(
-  //             (type) => DressType.fromMap(type),
-  //           ),
-  //         );
-  //         _maleTypes = List<DressType>.from(
-  //             _types.where((element) => element.type == 1));
-  //         _femaleTypes = List<DressType>.from(
-  //             _types.where((element) => element.type == 0));
-  //       }
-  //       notifyListeners();
-  //     }
-  //     if (res['status'] == false) {
-  //       return res;
-  //     }
-  //     return res;
-  //   });
-  // }
   Future<dynamic> getData() {
     return NetworkHelper().get('api/types').then((res) {
       if (res['status'] == true) {
@@ -173,6 +160,32 @@ class AppData extends ChangeNotifier {
               _types.where((element) => element.type == 1));
           _femaleTypes = List<DressType>.from(
               _types.where((element) => element.type == 0));
+        }
+        notifyListeners();
+      }
+      if (res['status'] == false) {
+        return res;
+      }
+      return res;
+    });
+  }
+
+  Future<dynamic> getUpdatedData() {
+    return NetworkHelper().get('api/prices').then((res) {
+      if (res['status'] == true) {
+        final resImages = res['images'];
+        final resTypes = res['types'];
+        _images = List<String>.from(resImages);
+        if (resTypes != null) {
+          _types = List<DressType>.from(
+            resTypes.map(
+                  (type) => DressType.fromMap(type),
+            ),
+          );
+          _maleTypes = List<DressType>.from(
+              _types.where((element) => element.type == 1));
+          _femaleTypes = List<DressType>.from(
+              _types.where((element) => element.type == 2));
         }
         notifyListeners();
       }

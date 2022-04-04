@@ -18,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: Provider.of<AppData>(context, listen: false).getData(),
+      future: Provider.of<AppData>(context, listen: false).getUpdatedData(),
       builder: (context, snapshot) => snapshot.connectionState ==
               ConnectionState.waiting
           ? Scaffold(

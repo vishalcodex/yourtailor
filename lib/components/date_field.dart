@@ -22,8 +22,8 @@ class BasicDateField extends StatelessWidget {
       onShowPicker: (context, currentValue) {
         return showDatePicker(
             context: context,
-            firstDate: DateTime.now().add(Duration(days: 1)),
-            initialDate: currentValue ?? DateTime.now().add(Duration(days: 1)),
+            firstDate: DateTime.now().add(Duration(days: 2)),
+            initialDate: currentValue ?? DateTime.now().add(Duration(days: 2)),
             lastDate: DateTime(2100));
       },
     );

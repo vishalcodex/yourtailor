@@ -119,13 +119,13 @@ class _OccasionScreenState extends State<OccasionScreen> {
             submit: occasions.any((element) => element.selected == true)
                 ? () {
                     context.read<AppData>().setOccasions(occasions);
-                    context.read<AppData>().setSelectedGender(
-                          Gender(
-                              selectedImage: 'assets/male.svg',
-                              image: 'assets/male_white.svg',
-                              title: 'Male',
-                              selected: false),
-                        );
+                    // context.read<AppData>().setSelectedGender(
+                    //       Gender(
+                    //           selectedImage: 'assets/male.svg',
+                    //           image: 'assets/male_white.svg',
+                    //           title: 'Male',
+                    //           selected: false),
+                    //     );
                     return Navigator.push(
                       context,
                       MaterialPageRoute(
