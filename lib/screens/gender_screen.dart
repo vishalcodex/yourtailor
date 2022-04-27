@@ -31,7 +31,7 @@ class _GenderScreenState extends State<GenderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select Fabric'),
+        title: Text('Select Gender'),
       ),
       body: Column(
         children: [

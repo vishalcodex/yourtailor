@@ -20,7 +20,7 @@ class _FabricScreenState extends State<FabricScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select Fabric'),
+        title: Text('Select Option'),
       ),
       body: Column(
         children: [
